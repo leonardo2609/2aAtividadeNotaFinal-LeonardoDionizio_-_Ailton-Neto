@@ -235,9 +235,9 @@
 
                 <div class="formulario">
 
-                    <form action="delete_book.php" method="post">
-                        <label for="titulo_exclui">Digite o título do livro:</label> <br>
-                        <input type="text" id="titulo_exclui" name="titulo_exclui" required> <br>
+                    <form id="form_exclui" action="delete_book.php" method="post" onsubmit="excluirLivro(); return false;">
+                        <label for="id_exclui">Digite o ID do livro:</label> <br>
+                        <input type="number" id="id_exclui" name="id" required> <br>
 
                         <button type="submit">Excluir</button>
                     </form>
@@ -315,11 +315,56 @@
             tabela.appendChild(novaLinha); // Insere a nova linha na tabela
         }
 
+        function excluirLivro() {
+            const form = document.querySelector('#form_exclui'); // Seleciona o formulário
+            const formData = new FormData(form); // Cria um FormData com os dados, ID, do formulário
+
+            // Envia a requisição AJAX para o servidor
+            fetch('delete_book.php', { // Envia para o servidor, delete_book.php, a requisição
+                method: 'POST', // Especifica que a requisição é pelo metodo POST
+                body: formData, // Envia o objeto, formData, com os dados do formulário, ID
+            })
+                .then((response) => { // É executada quando obtem uma resposta do servidor, delete_book.php
+                    if (!response.ok) {
+                        throw new Error('Erro ao excluir o livro.');
+                    }
+                    return response.json();
+                })
+                .then((data) => { // É executada quando é recebido o arquivo JSON
+                    if (data.success) {
+                        // Remove a linha correspondente na tabela
+                        removerLinhaDaTabela(data.id);
+                        form.reset(); // Limpa o formulário após a exclusão
+                        alert('Livro excluído com sucesso!');
+                    } else {
+                        alert('Erro: ' + data.error);
+                    }
+                })
+                .catch((error) => {
+                    console.error(error);
+                    alert('Ocorreu um erro ao excluir o livro.');
+                });
+        }
+
+        // Função para remover a linha da tabela
+        function removerLinhaDaTabela(id) {
+            const tabela = document.querySelector('#corpo_tabela');
+            const linhas = tabela.querySelectorAll('tr');
+
+            // Encontra a linha com o ID correspondente e a remove
+            linhas.forEach((linha) => {
+                if (linha.firstElementChild.textContent == id) {
+                    tabela.removeChild(linha);
+                }
+            });
+        }
+
+
     </script>
 </body>
 </html>
 
 <?php
     require 'database.php';
-    require 'delete_book.php';
+    // require 'delete_book.php';
 ?>
