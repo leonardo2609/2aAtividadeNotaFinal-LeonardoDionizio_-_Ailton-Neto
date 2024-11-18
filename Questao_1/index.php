@@ -292,6 +292,7 @@
                     // Atualiza a tabela com os novos dados
                     adicionarLinhaNaTabela(data);
                     form.reset(); // Limpa o formulário após o envio
+                    alert('Livro adicionado com sucesso!');
                 })
                 .catch((error) => { // É executada se ocorrer algum erro
                     console.error(error); // Imprime o erro no console do navegador
