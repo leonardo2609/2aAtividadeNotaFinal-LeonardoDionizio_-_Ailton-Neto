@@ -6,7 +6,8 @@
             // Recebe os dados do formulário
             $titulo = $_POST['titulo'] ?? null;
             $autor = $_POST['autor'] ?? null;
-            $ano = isset($_POST['ano']) ? intval($_POST['ano']) : null;
+            $ano = DateTime::createFromFormat('Y-m-d', $_POST['ano'])->format('d-m-Y');
+
 
             // Prepara a query para inserir os dados
             $stm = $conn->prepare("INSERT INTO livros (titulo, autor, ano_publicacao) VALUES (?, ?, ?)");

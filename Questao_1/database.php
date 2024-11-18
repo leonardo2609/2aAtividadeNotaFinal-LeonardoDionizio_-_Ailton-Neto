@@ -9,7 +9,7 @@
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             titulo TEXT NOT NULL,
             autor TEXT NOT NULL,
-            ano_publicacao INTEGER NOT NULL
+            ano_publicacao DATE NOT NULL
         )";
     
         // Executa a criação da tabela
