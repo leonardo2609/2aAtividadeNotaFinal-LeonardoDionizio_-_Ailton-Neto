@@ -192,36 +192,8 @@
                     </tr>
                 </thead>
                 
-                <tbody>
-                <?php
-                    require 'database.php'; // Inclui o arquivo de conexão
-
-                    try {
-                        // Consulta ao banco de dados
-                        $query = "SELECT * FROM livros";
-                        $stmt = $conn->query($query); // Executa a consulta
-
-                        // Itera sobre os resultados
-                        if ($stmt) {
-                            $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                            if (count($resultados) > 0) {
-                                foreach ($resultados as $row) {
-                                    echo "<tr>";
-                                    echo "<td class='celula_tabela'>" . htmlspecialchars($row['id']) . "</td>";
-                                    echo "<td class='celula_tabela'>" . htmlspecialchars($row['titulo']) . "</td>";
-                                    echo "<td class='celula_tabela'>" . htmlspecialchars($row['autor']) . "</td>";
-                                    echo "<td class='celula_tabela'>" . htmlspecialchars($row['ano_publicacao']) . "</td>";
-                                    echo "</tr>";
-                                }
-                            } else {
-                                echo "<tr><td colspan='4'>Nenhum livro cadastrado</td></tr>";
-                            }
-                        }
-                    } catch (PDOException $e) {
-                        echo "<tr><td colspan='4'>Erro ao consultar banco de dados: " . $e->getMessage() . "</td></tr>";
-                    }
-                    ?>
-                    </tr>
+                <tbody id="corpo_tabela">
+                
                 </tbody>
             </table>
 
@@ -238,7 +210,7 @@
     
                 <div class="formulario">
 
-                    <form class="limpa_formulario" method="post" onsubmit="enviarFormulario(); return false;">
+                    <form id="form_cadastro" method="post" onsubmit="enviarFormulario(); return false;">
                         <label for="titulo">Título:</label> <br>
                         <input type="text" id="titulo" name="titulo" required> <br>
         
@@ -248,7 +220,7 @@
                         <label for="ano">Ano de Publicação:</label> <br>
                         <input type="number" id="ano" name="ano" required> <br>
 
-                        <button type="submit" onclick="confirmacaoDeEnvio()">Inserir</button>
+                        <button type="submit">Inserir</button>
                     </form>
     
                 </div>
@@ -284,10 +256,6 @@
 
         function main() {
             definirTamanhoMaximoCelula();
-
-            document.getElementById("limpa_formulario").addEventListener("submit", function() {
-                limparFormulario();
-            });
         }
 
         function definirTamanhoMaximoCelula() {
@@ -306,16 +274,45 @@
 
         //Impede que quando enviar o formulário ele abra uma nova aba ou o arquivo "add_book.php"
         function enviarFormulario() {
-            let xhr = new XMLHttpRequest(); // Cria um objeto para a requisição
-            xhr.open('POST', 'add_book.php', true); // Configura o método como POST, para o arquivo php. Indicando também que a requisição é assincrona. Ou seja, o usuário pode continuar navegando no site enquanto o servidor envia a requisição.
-            
-            xhr.send(new FormData(document.getElementById('meuFormulario'))); // Envia os dados recebidos para o servidor
+            const form = document.querySelector('#form_cadastro'); // Seleciona o formulário
+            const formData = new FormData(form); // Cria o objeto FormData com os dados do formulário
 
-            location.reload();
+            // Envia a requisição AJAX
+            fetch('add_book.php', { // A função "fetch" envia uma requisição http para o arquivo "add_book.php"
+                method: 'POST', // Indica que a requisição é do método post
+                body: formData, // E que o corpo da requisição são os dados guardados no objeto "formData"
+            })
+                .then((response) => { // Quando a resposta do servidor, add_book.php, é recebida
+                    if (!response.ok) { // Verifica se há algum erro
+                        throw new Error('Erro ao cadastrar o livro.');
+                    }
+                    return response.json(); // Converte a resposta para JSON
+                })
+                .then((data) => { // É executada após a resposta ser convertida em JSON
+                    // Atualiza a tabela com os novos dados
+                    adicionarLinhaNaTabela(data);
+                    form.reset(); // Limpa o formulário após o envio
+                })
+                .catch((error) => { // É executada se ocorrer algum erro
+                    console.error(error); // Imprime o erro no console do navegador
+                    alert('Ocorreu um erro ao cadastrar o livro.'); // E informa ao usuário
+                });
         }
 
-        function limpandoFormulario() {
-            document.getElementsByClassName('limpa_formulario').reset();
+        // Função para adicionar uma nova linha na tabela
+        function adicionarLinhaNaTabela(data) {
+            const tabela = document.querySelector('#corpo_tabela'); // Seleciona o corpo da tabela
+            const novaLinha = document.createElement('tr'); // Cria uma nova linha
+
+            // Adiciona as células com os dados
+            novaLinha.innerHTML = `
+                <td class="celula_tabela">${data.id}</td>
+                <td class="celula_tabela">${data.titulo}</td>
+                <td class="celula_tabela">${data.autor}</td>
+                <td class="celula_tabela">${data.ano_publicacao}</td>
+            `;
+
+            tabela.appendChild(novaLinha); // Insere a nova linha na tabela
         }
 
     </script>
@@ -324,6 +321,5 @@
 
 <?php
     require 'database.php';
-    require 'add_book.php';
     require 'delete_book.php';
 ?>

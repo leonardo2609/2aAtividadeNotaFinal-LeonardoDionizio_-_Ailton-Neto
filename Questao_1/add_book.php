@@ -7,23 +7,21 @@
             $titulo = $_POST['titulo'] ?? null;
             $autor = $_POST['autor'] ?? null;
             $ano = isset($_POST['ano']) ? intval($_POST['ano']) : null;
-    
-            // Verifica se todos os campos foram preenchidos
-            if ($titulo && $autor && $ano) {
-                // Prepara a query para inserir os dados
-                $stm = $conn->prepare(
-                    "INSERT INTO livros (titulo, autor, ano_publicacao) VALUES (?, ?, ?)"
-                );
-    
-                // Executa a query com os valores
-                if ($stm->execute([$titulo, $autor, $ano])) {
-                    echo "Livro cadastrado com sucesso!";
-                } else {
-                    echo "Erro ao cadastrar o livro.";
-                }
-            } else {
-                echo "Por favor, preencha todos os campos.";
-            }
+
+            // Prepara a query para inserir os dados
+            $stm = $conn->prepare("INSERT INTO livros (titulo, autor, ano_publicacao) VALUES (?, ?, ?)");
+
+            $stm->execute([$titulo, $autor, $ano]);
+
+            // Retorna o último ID inserido e os dados em JSON
+            $lastId = $conn->lastInsertId();
+            echo json_encode([
+                'id' => $lastId,
+                'titulo' => $titulo,
+                'autor' => $autor,
+                'ano_publicacao' => $ano
+            ]);
+            exit;
         }
     } catch (PDOException $erro) {
         // Exibe mensagem de erro
