@@ -177,11 +177,7 @@
         <!-- Seção de livros já cadastrados -->
 
         <div class="livros_cadastrados">
-
-            <h2>
-                Livros Cadastrados
-            </h2>
-
+            <h2>Livros Cadastrados</h2>
             <table>
                 <thead>
                     <tr class="cabecalho_table">
@@ -192,24 +188,17 @@
                     </tr>
                 </thead>
                 
-                <tbody id="corpo_tabela">
-                
-                </tbody>
+                <tbody id="corpo_tabela"></tbody>
             </table>
-
         </div>
 
         <!-- Seção de cadastro de livros -->
+
         <section class="altera_tabela">
-
             <div class="cadastro">
-
-                <h2>
-                    Cadastre os livros aqui 👇
-                </h2>
+                <h2>Cadastre os livros aqui 👇</h2>
     
                 <div class="formulario">
-
                     <form id="form_cadastro" method="post" onsubmit="enviarFormulario(); return false;">
                         <label for="titulo">Título:</label> <br>
                         <input type="text" id="titulo" name="titulo" required> <br>
@@ -222,32 +211,22 @@
 
                         <button type="submit">Inserir</button>
                     </form>
-    
                 </div>
-    
             </div>
 
             <div class="exclui">
-
-                <h2 class="titulo_exclui">
-                    Exclua os livros aqui 👇
-                </h2>
+                <h2 class="titulo_exclui">Exclua os livros aqui 👇</h2>
 
                 <div class="formulario">
-
                     <form id="form_exclui" action="delete_book.php" method="post" onsubmit="excluirLivro(); return false;">
                         <label for="id_exclui">Digite o ID do livro:</label> <br>
                         <input type="number" id="id_exclui" name="id" required> <br>
 
                         <button type="submit">Excluir</button>
                     </form>
-    
                 </div>
-
             </div>
-
         </section>
-
     </main>
 
     <script defer>
@@ -362,17 +341,17 @@
         }
 
         function carregarDados() {
-            fetch('get_book.php') // Requisição ao servidor para obter os livros
-                 .then((response) => {
-                     if (!response.ok) {
+            fetch('get_book.php') // Requisição ao servidor para obter os dados do banco de dados
+                 .then((response) => { // Espera a resposta do servidor, get_book.php
+                     if (!response.ok) { // Se o servidor não responder ele apresenta o erro
                          throw new Error('Erro ao carregar os livros.');
                      }
                       return response.json(); // Converte a resposta em JSON
                 })
-                .then((data) => {
+                .then((data) => { // Espera o arquivo JSON
                     carregarTabela(data);
                 })
-                .catch((error) => {
+                .catch((error) => { // Caso ocorra algum erro no processo
                     console.error(error); // Loga o erro no console
                     alert('Erro ao carregar os livros.');
                 });

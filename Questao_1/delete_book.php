@@ -16,22 +16,18 @@ try {
                 echo json_encode(['success' => true, 'id' => $id]);
             } else {
                 // Caso o ID não exista
-                http_response_code(404);
                 echo json_encode(['error' => 'Livro não encontrado.']);
             }
         } else {
             // Caso o ID não seja fornecido
-            http_response_code(400); // Bad Request
             echo json_encode(['error' => 'ID inválido ou ausente.']);
         }
     } else {
         // Caso o método HTTP não seja POST
-        http_response_code(405); // Envia um erro via http para o site
         echo json_encode(['error' => 'Método não permitido.']);
     }
 } catch (PDOException $e) {
     // Retorna erro em JSON caso ocorra uma exceção
-    http_response_code(500);
     echo json_encode(['error' => $e->getMessage()]);
 }
 ?>

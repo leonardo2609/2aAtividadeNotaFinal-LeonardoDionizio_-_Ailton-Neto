@@ -10,7 +10,6 @@ try {
     $livros = $stmt->fetchAll(PDO::FETCH_ASSOC);
     echo json_encode($livros);
 } catch (PDOException $e) {
-    http_response_code(500); // Retorna erro 500 em caso de exceção
     echo json_encode(['error' => $e->getMessage()]);
 }
 ?>
