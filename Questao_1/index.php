@@ -370,8 +370,7 @@
                       return response.json(); // Converte a resposta em JSON
                 })
                 .then((data) => {
-                    teste(data);
-                    // alert("Dados carregados!");
+                    carregarTabela(data);
                 })
                 .catch((error) => {
                     console.error(error); // Loga o erro no console
@@ -381,36 +380,10 @@
 
         function carregarTabela(data) {
             const tabela = document.querySelector('#corpo_tabela'); // Seleciona o corpo da tabela
-            
-            tabela.innerHTML = ''; // Limpa o corpo da tabela antes de adicionar os dados
-
-            // Verifica se data é um array válido
-            if (!Array.isArray(data)) {
-                console.error('Os dados fornecidos para a tabela não são um array:', data);
-                return; // Sai da função para evitar erros
-            }
-
-            data.forEach((db) => {
-                const linha = document.createElement('tr');
-
-                linha.innerHTML =
-                `
-                    <td class="celula_tabela">${db.id}</td>
-                    <td class="celula_tabela">${db.titulo}</td>
-                    <td class="celula_tabela">${db.autor}</td>
-                    <td class="celula_tabela">${db.ano_publicacao}</td>
-                `;
-
-                tabela.appendChild(linha);
-            });
-        }
-
-        function teste(data) {
-            const tabela = document.querySelector('#corpo_tabela'); // Seleciona o corpo da tabela
     
             tabela.innerHTML = ''; // Limpa o corpo da tabela antes de adicionar os dados
 
-                    // Verifica se data é um array ou objeto
+            // Verifica se data é um array ou objeto
             if (Array.isArray(data)) {
                 // Itera sobre os objetos dentro do array
                 data.forEach((db) => {
